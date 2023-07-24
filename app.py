@@ -16,19 +16,19 @@ def main():
     # Load data based on category and rule
     data = load_data(category, rule)
 
-    # Toggle button for showing/hiding the smooth metric line
-    show_smooth_metric_line = st.checkbox("Show Smooth Metric Line", value=True)
+    # Toggle button for showing/hiding the Moving Average line
+    show_trace_line = st.checkbox("Show Moving Average Line", value=True)
     # Show data frame checkbox
     show_data_frame = st.checkbox("Show Data Frame")
 
-    # Create and display the ROC AUC plot with the smooth metric line (if enabled)
+    # Create and display the ROC AUC plot with the Moving Average line (if enabled)
     st.subheader("ROC AUC Over Time")
-    fig_roc = create_roc_plot(data, show_smooth_metric_line)
+    fig_roc = create_roc_plot(data, show_trace_line)
     st.plotly_chart(fig_roc)
 
-    # Create and display the PR AUC plot with the smooth metric line (if enabled)
+    # Create and display the PR AUC plot with the Moving Average line (if enabled)
     st.subheader("PR AUC Over Time")
-    fig_pr = create_pr_plot(data, show_smooth_metric_line)
+    fig_pr = create_pr_plot(data, show_trace_line)
     st.plotly_chart(fig_pr)
 
 

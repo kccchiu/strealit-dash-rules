@@ -2,7 +2,7 @@ import plotly.graph_objects as go
 import pandas as pd
 from datetime import datetime, timedelta
 
-def create_roc_plot(data, show_smooth_metric_line=True):
+def create_roc_plot(data, show_trace_line=True, window_size=3):
     # Convert 'train_date' column to datetime format
     data['train_date'] = pd.to_datetime(data['train_date'])
 
@@ -12,8 +12,9 @@ def create_roc_plot(data, show_smooth_metric_line=True):
     fig.add_trace(go.Bar(x=data['train_date'], y=data['roc_auc'], name='ROC AUC', marker_color='rgba(77, 173, 232, 0.5)'))
 
     # Add the smooth red line on top of the bar chart for another metric (e.g., another version of ROC AUC) if enabled
-    if show_smooth_metric_line:
-        fig.add_trace(go.Scatter(x=data['train_date'], y=data['roc_auc'], mode='lines', name='Smooth Metric', line=dict(color='red')))
+    if show_trace_line:
+        smooth_pr_auc = data['pr_auc'].rolling(window=window_size, min_periods=1).mean()
+        fig.add_trace(go.Scatter(x=data['train_date'], y=smooth_pr_auc, mode='lines', name='Smooth Metric', line=dict(color='red')))
 
     fig.update_layout(
         # title='ROC AUC Over Time',
@@ -37,7 +38,7 @@ def create_roc_plot(data, show_smooth_metric_line=True):
 
     return fig
 
-def create_pr_plot(data, show_smooth_metric_line=True):
+def create_pr_plot(data, show_smooth_metric_line=True, window_size=3):
     # Convert 'train_date' column to datetime format
     data['train_date'] = pd.to_datetime(data['train_date'])
 
@@ -48,7 +49,8 @@ def create_pr_plot(data, show_smooth_metric_line=True):
 
     # Add the smooth red line on top of the bar chart for another metric (e.g., another version of PR AUC) if enabled
     if show_smooth_metric_line:
-        fig.add_trace(go.Scatter(x=data['train_date'], y=data['pr_auc'], mode='lines', name='Smooth Metric', line=dict(color='red')))
+        smooth_pr_auc = data['pr_auc'].rolling(window=window_size, min_periods=1).mean()
+        fig.add_trace(go.Scatter(x=data['train_date'], y=smooth_pr_auc, mode='lines', name='Smooth Metric', line=dict(color='red')))
 
     fig.update_layout(
         # title='PR AUC Over Time',
