@@ -10,33 +10,32 @@ def generate_fake_data():
     end_date = datetime(2023, 8, 31)
 
     while start_date <= end_date:
+        category = random.choice(["ABC", "BSD", "AbcDef"])
+        if category == "ABC":
+            rule = random.choice(["abc1_OS.csv", "weh.csv", "bcd_abc.csv"])
+        elif category == "BSD":
+            rule = random.choice(["efgh_1.csv", "asdasd_ab.csv", "bcd_qw.csv"])
+        else:  # AbcDef
+            rule = random.choice(["apple.csv", "abc2_def.csv", "99_Abc.csv"])
+
         roc_auc = round(random.uniform(0.5, 1.0), 4)
         pr_auc = round(random.uniform(0.5, 1.0), 4)
-        data.append((roc_auc, pr_auc, start_date.strftime("%Y-%m-%d")))
+        data.append((category, rule, roc_auc, pr_auc, start_date.strftime("%Y-%m-%d")))
         start_date += timedelta(days=1)
 
-    return pd.DataFrame(data, columns=['roc_auc', 'pr_auc', 'train_date'])
+    return pd.DataFrame(data, columns=['category', 'rule', 'roc_auc', 'pr_auc', 'train_date'])
 
 # Function to save data to CSV file
 def save_data_to_csv(data, category, rule):
-    directory = f"{category}"
+    directory = f"data/{category}"
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    file_path = f"{directory}/cat{category}_rule{rule}.csv"
+    file_path = f"{directory}/{rule}"
     data.to_csv(file_path, index=False)
 
 if __name__ == "__main__":
-    categories = ["A", "B", "C"]
-    rules = {
-        "A": [1, 2, 3, 45],
-        "B": [24, 45,52],
-        "C": [123,12,42]
-    }
-
-    for category in categories:
-        for rule in rules[category]:
-            fake_data = generate_fake_data()
-            save_data_to_csv(fake_data, category, rule)
-
-            print(f"Fake data for Category {category}, Rule {rule} has been generated and saved.")
+    fake_data = generate_fake_data()
+    for _, row in fake_data.iterrows():
+        category, rule, roc_auc, pr_auc, train_date = row
+        save_data_to_csv(fake_data[["roc_auc", "pr_auc", "train_date"]], category, rule)

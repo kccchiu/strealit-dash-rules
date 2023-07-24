@@ -3,12 +3,7 @@ import streamlit as st
 import pandas as pd
 from components.sidebar import select_category_and_rule
 from components.plot import create_roc_plot, create_pr_plot
-
-# Function to load data from CSV files
-def load_data(category, rule):
-    file_path = f"data/{category}/cat{category}_rule{rule}.csv"
-    data = pd.read_csv(file_path)
-    return data
+from components.data_loader import load_data
 
 # Main Streamlit app
 def main():
@@ -16,7 +11,7 @@ def main():
     category, rule = select_category_and_rule()
 
     # Set the title with the selected category and rule
-    st.markdown(f"<h1 style='text-align: center;'>Model Performance Dashboard for {category} {rule}</h1>", unsafe_allow_html=True)
+    st.markdown(f"<h1 style='text-align: center;'>Model Performance Dashboard for <br>{category} {rule}</h1>", unsafe_allow_html=True)
     
     # Load data based on category and rule
     data = load_data(category, rule)
